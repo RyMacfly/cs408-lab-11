@@ -7,57 +7,125 @@
     <title>Test AWS Lambda</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <h1>Simple Demo for PUT, GET, and DELETE</h1>
-    <p id="lambda-info">
-        <!-- loaded with AJAX -->
-    </p>
+    <h1>Ryan's Database</h1>
 
-    <hr>
-    <button id="send-data">Send Data</button>
-    <p>Sends an example JSON object to the server with id 11111</p>
-    <script>
-        document.getElementById("send-data").onclick = function () {
-            let xhr = new XMLHttpRequest();
-            xhr.open("PUT", "Your Lambda here");
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(JSON.stringify({
-                "id": "6666666",
-                "price": 19,
-                "name": "test put value"
-            }));
-        }
-    </script>
+    <!-- Form for user input -->
+    <form id="item-form">
+        <label for="id">ID:</label>
+        <input type="text" id="id" name="id" required><br>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required><br>
+        <button type="button" id="add-item">Add Item</button>
+    </form>
 
+
+
+    <!-- Button to load data -->
     <button id="load-data">Load Data</button>
-    <p>Loads data from the server</p>
-    <script>
-        document.getElementById("load-data").onclick = function () {
-            let lambda = document.getElementById("lambda-info");
-            let xhr = new XMLHttpRequest();
-            xhr.addEventListener("load", function () {
-                lambda.innerHTML = xhr.response;
-            });
-            xhr.open("GET", "Your Lambda here");
-            xhr.send();
-        }
 
-    </script>
+    <!-- Table to display data -->
+    <table id="item-table" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Loaded with AJAX -->
+        </tbody>
+    </table>
 
-    <hr>
-    <button id="delete-data">Delete Data</button>
-    <p>Deletes a JSON object from the server with 11111</p>
     <script>
-        document.getElementById("delete-data").onclick = function () {
-            let xhr = new XMLHttpRequest();
-            xhr.open("DELETE", "Your Lambda here");
+        // Function to add item to the database
+        document.getElementById("add-item").onclick = function () {
+            const id = document.getElementById("id").value;
+            const name = document.getElementById("name").value;
+            const price = document.getElementById("price").value;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("PUT", "https://m247ez9228.execute-api.us-east-2.amazonaws.com/items");
             xhr.setRequestHeader("Content-Type", "application/json");
+            // xhr.onload = function () {
+            //     if (xhr.status === 200) {
+            //         loadData(); // Refresh table after adding
+            //     } else {
+            //         console.error("Error adding item:", xhr.responseText);
+            //     }
+            // };
+            xhr.send(JSON.stringify({ id, name, price }));
+        }
+
+        // Function to load data from the server and display in table
+        function loadData() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://m247ez9228.execute-api.us-east-2.amazonaws.com/items");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const items = JSON.parse(xhr.responseText);
+                    const tableBody = document.getElementById("table-body");
+                    tableBody.innerHTML = ""; // Clear table
+
+                    // Populate table rows with data
+                    items.forEach(item => {
+                        const row = document.createElement("tr");
+
+                        const idCell = document.createElement("td");
+                        idCell.textContent = item.id;
+                        row.appendChild(idCell);
+
+                        const nameCell = document.createElement("td");
+                        nameCell.textContent = item.name;
+                        row.appendChild(nameCell);
+
+                        const priceCell = document.createElement("td");
+                        priceCell.textContent = item.price;
+                        row.appendChild(priceCell);
+
+                        const actionCell = document.createElement("td");
+                        const deleteButton = document.createElement("button");
+                        deleteButton.textContent = "Delete";
+                        deleteButton.onclick = function () {
+                            deleteItem(item.id);
+                        };
+                        actionCell.appendChild(deleteButton);
+                        row.appendChild(actionCell);
+
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error("Error loading data:", xhr.responseText);
+                }
+            };
             xhr.send();
         }
+
+        // Function to delete an item from the database
+        function deleteItem(id) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("DELETE", `https://m247ez9228.execute-api.us-east-2.amazonaws.com/items/${id}`);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    loadData(); // Refresh table after deletion
+                } else {
+                    console.error("Error deleting item:", xhr.responseText);
+                }
+            };
+            xhr.send();
+        }
+
+        // Event listener for "Load Data" button
+        document.getElementById("load-data").onclick = loadData;
     </script>
+
 </body>
 
 </html>

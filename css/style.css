@@ -1,4 +1,127 @@
-h1{
-  border-color: #d3e644;
-  border-style: dashed;
+body {
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  padding: 20px;
+  overflow: hidden;
+}
+
+h1 {
+  font-size: 2em;
+  color: #00c9ff;
+  text-shadow: 0 0 10px #00c9ff, 0 0 20px #0077ff;
+  margin-bottom: 1em;
+}
+
+/* Form Styling */
+form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 201, 255, 0.4);
+  transition: box-shadow 0.3s ease;
+}
+
+form:hover {
+  box-shadow: 0 0 20px rgba(0, 201, 255, 0.6);
+}
+
+input[type="text"],
+input[type="number"] {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #00c9ff;
+  color: #e0e0e0;
+  padding: 5px;
+  outline: none;
+  font-size: 1em;
+  width: 80px;
+}
+
+button {
+  background-color: #0077ff;
+  color: #e0e0e0;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+button:hover {
+  background-color: #00c9ff;
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Table Styling */
+table {
+  
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 201, 255, 0.4);
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  color: #e0e0e0;
+}
+
+th {
+  background: #00c9ff;
+  color: #121212;
+}
+
+tbody tr {
+  border-bottom: 1px solid #333;
+  transition: background 0.2s ease-in-out;
+}
+
+tbody tr:hover {
+  background: rgba(0, 121, 255, 0.1);
+}
+
+/* Action Button */
+.delete-button {
+  color: #e0e0e0;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+.delete-button:hover {
+ 
+  transform: scale(1.05);
+}
+
+.delete-button:active {
+  transform: scale(0.95);
+}
+
+/* Smooth Loading Animation for Data Rows */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+tbody tr {
+  animation: fadeIn 0.4s ease forwards;
 }
